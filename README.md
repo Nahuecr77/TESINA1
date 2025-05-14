@@ -2,4 +2,4 @@ TESINA
 --------------------------------------------------------------------------------------------------------------------
 STOCK DE COMPUTADORAS
 -----------------------------------------------------------------------------------------------------------
-En este proyecto de tesina va a ser una concesionaia de autos que va a incluir los detalles de los autos y sus caracterisitca mecanica, tambien vamos a hablar sobre la historia de esta concesionaria 
+En esta tesina vamos hacer un stock de las computadoras de la escuela, en esta base van a ver que computadoras andan y cuales no

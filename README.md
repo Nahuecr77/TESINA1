@@ -7,7 +7,7 @@ Actualmente, el colegio no cuenta con un sistema eficiente para el control y seg
  
  Teconologia usadas son HTML, CSS, JAVA SCRIPT Y BOOCTRAP
  
- Autores: Bima Nahuel y   Spacessi Giuliana
+ Autores: Bima Nahuel y   Spaccesi Giuliana
  
 Logo: ![Logo](https://drive.google.com/file/d/1YttUJychu-jqJe_dktVEaZAUdoipBOns/view?usp=sharing)
 

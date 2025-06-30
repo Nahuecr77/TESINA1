@@ -9,7 +9,22 @@ Actualmente, el colegio no cuenta con un sistema eficiente para el control y seg
  
  Autores: Bima Nahuel y   Spacessi Giuliana
  
+Logo: ![Logo](https://drive.google.com/file/d/1YttUJychu-jqJe_dktVEaZAUdoipBOns/view?usp=sharing)
+
+Links: https://drive.google.com/drive/folders/10reG7814FCiaXUN_EMdUvLZTv8sAE_zE
 
 ------------------------------------------------------------------------------------------------------------
-In this project we are going to develop a web page that will allow a detailed follow-up of the stock of computers in the school, verifying both their availability and their use. Through an automated system, we will be able to guarantee that the computers are available, in good working order and easily located in the different spaces. 
-Currently, the school does not have an efficient system for controlling and monitoring the stock of computers. This leads to disorganized management, difficulty in locating the equipment, lack of knowledge of its working condition, and limited availability for teachers and students.
+In this project we are going to develop a web page that will allow a detailed follow-up of the stock of computers in the school, verifying both their availability and their use. Through an automated system, it will be possible to ensure that computers are available, in good working order and easily located in the different spaces. 
+Currently, the school does not have an efficient system for controlling and monitoring the stock of computers. This results in disorganized management, difficulty in locating the equipment, lack of knowledge of its working condition, and limited availability for teachers and students.
+
+ The General Objective To develop an innovative web platform to efficiently and centrally manage the school's computer stock, facilitating its location, status control, availability and use. For this purpose, an automated system based on unique identifiers, such as QR codes, will be implemented to enable an accurate tracking of each computer. In addition, the aim is to optimize maintenance processes, prevent loss or misplacement and ensure that the devices are in optimal conditions for their educational use.
+ 
+ Technologies used are HTML, CSS, JAVA SCRIPT and BOOCTRAP.
+ 
+ Authors: Bima Nahuel and Spacessi Giuliana
+ 
+Logo: ![Logo](https://drive.google.com/file/d/1YttUJychu-jqJe_dktVEaZAUdoipBOns/view?usp=sharing)
+
+Links: https://drive.google.com/d
+
+Translated with DeepL.com (free version)

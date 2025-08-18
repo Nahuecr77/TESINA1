@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventario de Computadoras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="content">
+        <h1>Bienvenido al Sistema de Inventario de Computadoras</h1>
+        <p>Seleccione una opción del menú para comenzar.</p>
+    </div>
+   <div class="dashboard-menu">
+    <a href="{{ url_for('computadoras_en_uso') }}" class="menu-btn">
+        COMPUTADORAS EN USO
+    </a>
+    <a href="{{ url_for('computadoras_libres') }}" class="menu-btn">
+        COMPUTADORAS LIBRES
+    </a>
+    <a href="{{ url_for('observaciones') }}" class="menu-btn">
+        OBSERVACIONES
+    </a>
+</div>
+
+
+   
+   <!--
+     <h2>Bienvenido, {{ session['usuario_nombre'] }}</h2>
+    <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+    <h3>Computadoras</h3>
+    <a href="{{ url_for('nueva_computadora') }}">Agregar nueva computadora</a>
+    <table border="1">
+        <tr>
+            <th>Nombre</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Número de Serie</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+        </tr>
+        {% for compu in computadoras %}
+        <tr>
+            <td>{{ compu.nombre }}</td>
+            <td>{{ compu.marca }}</td>
+            <td>{{ compu.modelo }}</td>
+            <td>{{ compu.numero_serie }}</td>
+            <td>{{ compu.ubicacion }}</td>
+            <td>{{ compu.estado }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    -->
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

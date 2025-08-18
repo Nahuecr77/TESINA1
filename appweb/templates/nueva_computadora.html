@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nueva Computadora</title>
+</head>
+<body>
+    <h2>Agregar Nueva Computadora</h2>
+    <form method="post">
+        <input type="text" name="nombre" placeholder="Nombre" required><br>
+        <input type="text" name="marca" placeholder="Marca"><br>
+        <input type="text" name="modelo" placeholder="Modelo"><br>
+        <input type="text" name="numero_serie" placeholder="Número de Serie" required><br>
+        <input type="text" name="ubicacion" placeholder="Ubicación"><br>
+        <label>Estado:</label>
+        <select name="estado">
+            <option value="disponible">Disponible</option>
+            <option value="en uso">En uso</option>
+            <option value="mantenimiento">Mantenimiento</option>
+            <option value="baja">Baja</option>
+        </select><br>
+        <button type="submit">Agregar</button>
+    </form>
+    <a href="{{ url_for('index') }}">Volver al inventario</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</body>
+</html>

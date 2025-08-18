@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Stock de Computadoras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Título principal -->
+        <h1 class="login-title">STOCK DE COMPUTADORAS</h1>
+        
+     <!-- ...existing code... -->
+<!-- Listado de computadoras -->
+<div class="computadoras-listado">
+    <!-- Aquí va el código del listado de computadoras que estaba en index.html -->
+      <h3>Computadoras</h3>
+    <a href="{{ url_for('nueva_computadora') }}">Agregar nueva computadora</a>
+    <table border="2">
+        <tr>
+            <th>Nombre</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Número de Serie</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+        </tr>
+        {% for compu in computadoras %}
+        <tr>
+            <td>{{ compu.nombre }}</td>
+            <td>{{ compu.marca }}</td>
+            <td>{{ compu.modelo }}</td>
+            <td>{{ compu.numero_serie }}</td>
+            <td>{{ compu.ubicacion }}</td>
+            <td>{{ compu.estado }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- Agregar nueva computadora -->
+<div class="agregar-computadora">
+    <!-- Aquí va el formulario para agregar nueva computadora que estaba en index.html -->
+</div>
+
+<!-- Filtro por estado -->
+<div class="filtro-estado">
+    <!-- Aquí va el filtro por estado que estaba en index.html
+    <h3>Filtrar por Estado</h3>
+    <form method="get" action="{{ url_for('filtro_estado') }}">
+        <select name="estado">
+            <option value="todos">Todos</option>
+            <option value="en_uso">En Uso</option>
+            <option value="libre">Libre</option>
+            <option value="en_mantenimiento">En Mantenimiento</option>
+        </select>
+        <button type="submit">Filtrar</button>
+    </form>
+-->
+</div>
+<!-- ...existing code... -->
+        
+        <!-- Enlace de logout -->
+        <a href="{{ url_for('logout') }}" class="login-link">Cerrar Sesión</a>
+        
+        <!-- Mensajes flash -->
+        <div class="login-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html> 

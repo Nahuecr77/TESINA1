@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login - Stock de Computadoras</title>
+    <title>Dashboard - Stock de Computadoras</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -12,15 +12,21 @@
         <!-- Título -->
         <h1 class="login-title">Stock de Computadoras</h1>
         
-        <!-- Formulario -->
-        <form method="post" class="login-form">
-            <input type="email" name="correo" placeholder="Correo Electrónico" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit" class="login-btn">Entrar</button>
-        </form>
+        <!-- Menú de opciones -->
+        <div class="dashboard-menu">
+            <a href="{{ url_for('computadoras_en_uso') }}" class="menu-btn">
+                Computadoras en Uso
+            </a>
+            <a href="{{ url_for('computadoras_libres') }}" class="menu-btn">
+                Computadoras Libres
+            </a>
+            <a href="{{ url_for('observaciones') }}" class="menu-btn">
+                Observaciones
+            </a>
+        </div>
         
-        <!-- Enlace de registro -->
-        <a href="{{ url_for('registro') }}" class="login-link">¿No tienes cuenta? Regístrate</a>
+        <!-- Enlace de logout -->
+        <a href="{{ url_for('logout') }}" class="login-link">Cerrar Sesión</a>
         
         <!-- Mensajes flash -->
         <div class="login-messages">
@@ -36,4 +42,4 @@
     
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
-</html>
+</html> 

@@ -24,7 +24,7 @@
 
 
    
-   <!--
+ 
      <h2>Bienvenido, {{ session['usuario_nombre'] }}</h2>
     <a href="{{ url_for('logout') }}">Cerrar sesión</a>
     <h3>Computadoras</h3>
@@ -49,7 +49,7 @@
         </tr>
         {% endfor %}
     </table>
-    -->
+
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>

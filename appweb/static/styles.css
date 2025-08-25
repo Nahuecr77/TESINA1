@@ -31,7 +31,7 @@ body {
 
 /* Contenedor para login/registro/dashboard - Estilo unificado */
 .login-container {
-    max-width: 400px;
+    max-width: 70%;
     text-align: center;
     margin: 0 auto;
     background: white;

@@ -108,6 +108,26 @@ def logout():
     flash('Has cerrado sesión correctamente', 'info')
     return redirect(url_for('login'))
 
+# Filtrar computadoras por estado
+@app.route('/filtro_estado', methods=['GET'])
+def filtro_estado():
+    estado = request.args.get('estado', 'todos')
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        if estado == 'todos':
+            cursor.execute("SELECT * FROM computadoras ORDER BY id DESC")
+        else:
+            cursor.execute("SELECT * FROM computadoras WHERE estado = %s ORDER BY id DESC", (estado,))
+        computadoras = cursor.fetchall()
+        cursor.close()
+        conn.close()
+    except Error as e:
+        flash(f'Error al filtrar computadoras: {e}', 'danger')
+        computadoras = []
+    return render_template('dashboard_new.html', computadoras=computadoras)
+
+
 # CRUD DE COMPUTADORAS
 
 # Agregar nueva computadora

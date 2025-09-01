@@ -13,26 +13,28 @@
         <h1 class="login-title">Computadoras en Uso</h1>
         
         <!-- Lista de computadoras -->
-        <div class="dashboard-menu">
+        <div class="computadoras-list">
             {% if computadoras %}
                 {% for computadora in computadoras %}
                     <div class="computadora-item">
-                        <strong>{{ computadora.nombre }}</strong>
-                        <small>{{ computadora.marca }} {{ computadora.modelo }}</small>
-                        <small>Ubicación: {{ computadora.ubicacion }}</small>
-                        <small>N° Serie: {{ computadora.numero_serie }}</small>
+                        <h3>{{ computadora.nombre }}</h3>
+                        <p><strong>Marca:</strong> {{ computadora.marca }}</p>
+                        <p><strong>Modelo:</strong> {{ computadora.modelo }}</p>
+                        <p><strong>Ubicación:</strong> {{ computadora.ubicacion }}</p>
+                        <p><strong>N° Serie:</strong> {{ computadora.numero_serie }}</p>
+                        <span class="estado en-uso">{{ computadora.estado }}</span>
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="menu-btn" style="background: #f8f9fa; color: #6c757d; border-color: #e1e5e9;">
-                    No hay computadoras en uso
+                <div class="no-data-message">
+                    <p>No hay computadoras en uso actualmente</p>
                 </div>
             {% endif %}
         </div>
         
         <!-- Botón de regreso -->
         <a href="{{ url_for('dashboard') }}" class="back-btn">
-            Volver al Dashboard
+            Volver al Anterior 
         </a>
         
         <!-- Enlace de logout -->

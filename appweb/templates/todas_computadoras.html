@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todas las Computadoras - Stock de Computadoras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo centrado -->
+        <div class="login-logo"></div>
+        
+        <!-- Título principal -->
+        <h1 class="login-title">Todas las Computadoras</h1>
+        
+        <!-- Botón para agregar nueva computadora -->
+        <div class="add-computer-section">
+            <a href="{{ url_for('nueva_computadora') }}" class="add-btn">Agregar Nueva Computadora</a>
+        </div>
+        
+        <!-- Filtro por estado -->
+        <div class="filter-section">
+            <h3>Filtrar por Estado:</h3>
+            <a href="{{ url_for('filtro_estado', estado='todos') }}" class="filter-btn">Todas</a>
+            <a href="{{ url_for('filtro_estado', estado='En Uso') }}" class="filter-btn">En Uso</a>
+            <a href="{{ url_for('filtro_estado', estado='Libre') }}" class="filter-btn">Libre</a>
+            <a href="{{ url_for('filtro_estado', estado='Mantenimiento') }}" class="filter-btn">Mantenimiento</a>
+            <a href="{{ url_for('filtro_estado', estado='Fuera de Servicio') }}" class="filter-btn">Fuera de Servicio</a>
+        </div>
+        
+        <!-- Listado de computadoras -->
+        <div class="computers-list">
+            <h3>Listado de Computadoras</h3>
+            {% if computadoras %}
+                <table border="1" class="computers-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Número de Serie</th>
+                            <th>Ubicación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for compu in computadoras %}
+                        <tr>
+                            <td>{{ compu.nombre }}</td>
+                            <td>{{ compu.marca }}</td>
+                            <td>{{ compu.modelo }}</td>
+                            <td>{{ compu.numero_serie }}</td>
+                            <td>{{ compu.ubicacion }}</td>
+                            <td>{{ compu.estado }}</td>
+                            <td>
+                                <a href="{{ url_for('ver_computadora', id=compu.id) }}" class="action-btn">Ver</a>
+                                <a href="{{ url_for('editar_computadora', id=compu.id) }}" class="action-btn">Editar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-data-message">
+                    <p>No hay computadoras registradas actualmente</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Botón de regreso -->
+        <a href="{{ url_for('dashboard') }}" class="back-btn">
+            Volver al Dashboard
+        </a>
+        
+        <!-- Enlace de logout -->
+        <a href="{{ url_for('logout') }}" class="login-link">Cerrar Sesión</a>
+        
+        <!-- Mensajes flash -->
+        <div class="login-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

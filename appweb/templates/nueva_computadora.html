@@ -1,32 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Nueva Computadora</title>
+    <title>Nueva Computadora - Stock de Computadoras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h2>Agregar Nueva Computadora</h2>
-    <form method="post">
-        <input type="text" name="nombre" placeholder="Nombre" required><br>
-        <input type="text" name="marca" placeholder="Marca"><br>
-        <input type="text" name="modelo" placeholder="Modelo"><br>
-        <input type="text" name="numero_serie" placeholder="Número de Serie" required><br>
-        <input type="text" name="ubicacion" placeholder="Ubicación"><br>
-        <label>Estado:</label>
-        <select name="estado">
-            <option value="disponible">Disponible</option>
-            <option value="en uso">En uso</option>
-            <option value="mantenimiento">Mantenimiento</option>
-            <option value="baja">Baja</option>
-        </select><br>
-        <button type="submit">Agregar</button>
-    </form>
-    <a href="{{ url_for('index') }}">Volver al inventario</a>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="{{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+    <div class="nueva-computadora-container">
+        <!-- Logo centrado -->
+        <div class="nueva-computadora-logo"></div>
+        
+        <!-- Título -->
+        <h1 class="nueva-computadora-title">Agregar Nueva Computadora</h1>
+        
+        <!-- Formulario -->
+        <form method="post" class="nueva-computadora-form">
+            <input type="text" name="nombre" placeholder="Nombre" required>
+            <input type="text" name="marca" placeholder="Marca">
+            <input type="text" name="modelo" placeholder="Modelo">
+            <input type="text" name="numero_serie" placeholder="Número de Serie" required>
+            <input type="text" name="ubicacion" placeholder="Ubicación">
+            <select name="estado">
+                <option value="Libre">Libre</option>
+                <option value="En Uso">En Uso</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+                <option value="Fuera de Servicio">Fuera de Servicio</option>
+            </select>
+            <input type="date" name="fecha_adquisicion" placeholder="Fecha de Adquisición">
+            <textarea name="observaciones" placeholder="Observaciones (opcional)" rows="3"></textarea>
+            <button type="submit" class="nueva-computadora-btn">Agregar Computadora</button>
+        </form>
+        
+        <!-- Botón de regreso -->
+        <a href="{{ url_for('todas_computadoras') }}" class="back-btn">Volver al Inventario</a>
+        
+        <!-- Enlace de logout -->
+        <a href="{{ url_for('logout') }}" class="login-link">Cerrar Sesión</a>
+        
+        <!-- Mensajes flash -->
+        <div class="login-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>
 </html>

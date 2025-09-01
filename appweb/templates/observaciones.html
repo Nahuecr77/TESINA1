@@ -13,22 +13,23 @@
         <h1 class="login-title">Observaciones</h1>
         
         <!-- Lista de computadoras con observaciones -->
-        <div class="dashboard-menu">
+        <div class="computadoras-list">
             {% if computadoras %}
                 {% for computadora in computadoras %}
                     <div class="computadora-item">
-                        <strong>{{ computadora.nombre }}</strong>
-                        <small>{{ computadora.marca }} {{ computadora.modelo }}</small>
-                        <small>Estado: {{ computadora.estado }}</small>
-                        <small>Ubicación: {{ computadora.ubicacion }}</small>
+                        <h3>{{ computadora.nombre }}</h3>
+                        <p><strong>Marca:</strong> {{ computadora.marca }}</p>
+                        <p><strong>Modelo:</strong> {{ computadora.modelo }}</p>
+                        <p><strong>Estado:</strong> {{ computadora.estado }}</p>
+                        <p><strong>Ubicación:</strong> {{ computadora.ubicacion }}</p>
                         <div class="observacion">
                             <strong>Observación:</strong> {{ computadora.observaciones }}
                         </div>
                     </div>
                 {% endfor %}
             {% else %}
-                <div class="menu-btn" style="background: #f8f9fa; color: #6c757d; border-color: #e1e5e9;">
-                    No hay observaciones registradas
+                <div class="no-data-message">
+                    <p>No hay observaciones registradas actualmente</p>
                 </div>
             {% endif %}
         </div>

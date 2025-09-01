@@ -125,7 +125,7 @@ def filtro_estado():
     except Error as e:
         flash(f'Error al filtrar computadoras: {e}', 'danger')
         computadoras = []
-    return render_template('dashboard_new.html', computadoras=computadoras)
+    return render_template('todas_computadoras.html', computadoras=computadoras)
 
 
 # CRUD DE COMPUTADORAS
@@ -159,7 +159,7 @@ def nueva_computadora():
             cursor.close()
             conn.close()
             flash('Computadora agregada correctamente', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('todas_computadoras'))
         except Error as e:
             if "Duplicate entry" in str(e):
                 flash('El número de serie ya existe', 'danger')
@@ -432,10 +432,16 @@ def observaciones():
         flash(f'Error al cargar observaciones: {e}', 'danger')
         return render_template('observaciones.html', computadoras=[])
 
-# Actualizar la ruta del dashboard para usar el nuevo template
-
+# Ruta del dashboard (solo menú de opciones)
 @app.route('/dashboard')
 def dashboard():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('dashboard.html')
+
+# Ruta para mostrar todas las computadoras
+@app.route('/todas-computadoras')
+def todas_computadoras():
     if 'usuario_id' not in session:
         return redirect(url_for('login'))
     try:
@@ -445,10 +451,10 @@ def dashboard():
         computadoras = cursor.fetchall()
         cursor.close()
         conn.close()
-        return render_template('dashboard_new.html', computadoras=computadoras)
+        return render_template('todas_computadoras.html', computadoras=computadoras)
     except Error as e:
-        flash(f'Error al cargar computadoras en uso: {e}', 'danger')
-        return render_template('dashboard_new.html', computadoras=[])
+        flash(f'Error al cargar computadoras: {e}', 'danger')
+        return render_template('todas_computadoras.html', computadoras=[])
 
     
 

@@ -12,6 +12,11 @@
         <!-- Título -->
         <h1 class="login-title">Stock de Computadoras</h1>
         
+        <!-- Mensaje informativo -->
+        <div class="content">
+            <p>Seleccione una de las siguientes opciones para gestionar el inventario:</p>
+        </div>
+        
         <!-- Menú de opciones -->
         <div class="dashboard-menu">
             <a href="{{ url_for('computadoras_en_uso') }}" class="menu-btn">
@@ -22,6 +27,9 @@
             </a>
             <a href="{{ url_for('observaciones') }}" class="menu-btn">
                 Observaciones
+            </a>
+            <a href="{{ url_for('todas_computadoras') }}" class="menu-btn">
+                Todas las Computadoras
             </a>
         </div>
         

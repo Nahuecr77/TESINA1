@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos y Condiciones - Stock de Computadoras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="terminos-container">
+        <!-- Logo centrado -->
+        <div class="terminos-logo">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        
+        <!-- Título -->
+        <h1 class="terminos-title">
+            <i class="fas fa-file-contract"></i>
+            Términos y Condiciones
+        </h1>
+        
+        <!-- Contenido de términos -->
+        <div class="terminos-content">
+            <div class="terminos-section">
+                <h2><i class="fas fa-user-shield"></i> Política de Privacidad</h2>
+                <p>
+                    En nombre de la página de <strong>STOCK DE COMPUTADORAS</strong>, valoramos la privacidad de nuestros usuarios y nos comprometemos a proteger la información personal que recolectamos a través de nuestro sitio web.
+                </p>
+                <p>
+                    Esta Política de Privacidad describe cómo recopilamos, usamos y protegemos la información personal que usted nos proporciona al utilizar nuestros servicios, así como los términos y condiciones de uso del sitio.
+                </p>
+            </div>
+            
+            <div class="terminos-section">
+                <h2><i class="fas fa-info-circle"></i> Información que Recopilamos</h2>
+                <ul>
+                    <li>Información de contacto (nombre, correo electrónico)</li>
+                    <li>Datos de sesión y uso del sistema</li>
+                    <li>Información técnica del dispositivo</li>
+                    <li>Registros de actividad en el sistema</li>
+                </ul>
+            </div>
+            
+            <div class="terminos-section">
+                <h2><i class="fas fa-lock"></i> Protección de Datos</h2>
+                <p>
+                    Su información personal está protegida mediante medidas de seguridad técnicas y organizativas apropiadas. No compartimos, vendemos ni alquilamos su información personal a terceros sin su consentimiento explícito.
+                </p>
+            </div>
+            
+            <div class="terminos-section">
+                <h2><i class="fas fa-cookie-bite"></i> Uso de Cookies</h2>
+                <p>
+                    Utilizamos cookies para mejorar su experiencia de usuario y mantener la seguridad de su sesión. Puede configurar su navegador para rechazar cookies, aunque esto puede afectar la funcionalidad del sitio.
+                </p>
+            </div>
+            
+            <div class="terminos-section">
+                <h2><i class="fas fa-handshake"></i> Términos de Uso</h2>
+                <p>
+                    Al utilizar este sistema, usted acepta:
+                </p>
+                <ul>
+                    <li>Usar el sistema solo para fines legítimos</li>
+                    <li>No compartir sus credenciales de acceso</li>
+                    <li>Respetar la confidencialidad de la información</li>
+                    <li>Reportar cualquier uso indebido o sospechoso</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Formulario de aceptación -->
+        <form method="post" class="terminos-form" id="terminosForm">
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="aceptar_terminos" id="aceptar_terminos" required>
+                    <span class="checkmark"></span>
+                    He leído y acepto los términos y condiciones de uso
+                </label>
+            </div>
+            
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="aceptar_privacidad" id="aceptar_privacidad" required>
+                    <span class="checkmark"></span>
+                    He leído y acepto la política de privacidad
+                </label>
+            </div>
+            
+            <button type="submit" class="terminos-btn" id="btnContinuar" disabled>
+                <i class="fas fa-check-circle"></i>
+                Continuar al Sistema
+            </button>
+        </form>
+        
+        <!-- Enlace de logout -->
+        <div class="terminos-logout">
+            <a href="{{ url_for('logout') }}" class="logout-link">
+                <i class="fas fa-sign-out-alt"></i>
+                Cerrar Sesión
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Habilitar/deshabilitar botón según checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const btnContinuar = document.getElementById('btnContinuar');
+        
+        function checkCheckboxes() {
+            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            btnContinuar.disabled = !allChecked;
+            
+            if (allChecked) {
+                btnContinuar.classList.add('enabled');
+            } else {
+                btnContinuar.classList.remove('enabled');
+            }
+        }
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', checkCheckboxes);
+        });
+        
+        // Validación del formulario
+        document.getElementById('terminosForm').addEventListener('submit', function(e) {
+            const terminos = document.getElementById('aceptar_terminos').checked;
+            const privacidad = document.getElementById('aceptar_privacidad').checked;
+            
+            if (!terminos || !privacidad) {
+                e.preventDefault();
+                alert('Debe aceptar tanto los términos como la política de privacidad para continuar.');
+                return false;
+            }
+        });
+    </script>
+    
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
+

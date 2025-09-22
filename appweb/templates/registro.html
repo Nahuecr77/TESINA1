@@ -17,6 +17,10 @@
             <input type="text" name="nombre" placeholder="Nombre Completo" required>
             <input type="email" name="correo" placeholder="Correo Electrónico" required>
             <input type="password" name="password" placeholder="Contraseña" required>
+            <label style="display:flex; align-items:center; gap:8px; font-size: 14px;">
+                <input type="checkbox" required>
+                Acepto los <a href="{{ url_for('terminos_condiciones') }}" target="_blank">Términos y Condiciones</a> y la <a href="{{ url_for('terminos_condiciones') }}#privacidad" target="_blank">Política de Privacidad</a>
+            </label>
             <button type="submit" class="login-btn">Registrarse</button>
         </form>
         

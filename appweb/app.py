@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import mysql.connector
 from mysql.connector import Error
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -24,11 +24,35 @@ def get_db_connection():
         print(f"Error conectando a MySQL: {e}")
         raise e
 
+def require_auth_and_terms(f):
+    """Decorador para verificar autenticación y aceptación de términos"""
+    def decorated_function(*args, **kwargs):
+        if 'usuario_id' not in session:
+            return redirect(url_for('login'))
+        
+        return f(*args, **kwargs)
+    decorated_function.__name__ = f.__name__
+    return decorated_function
+
+def require_admin(f):
+    """Decorador para verificar autenticación, términos y rol de administrador"""
+    def decorated_function(*args, **kwargs):
+        if 'usuario_id' not in session:
+            return redirect(url_for('login'))
+        
+        # Verificar rol de administrador
+        if session.get('usuario_rol') != 'admin':
+            flash('Acceso denegado. Se requieren permisos de administrador.', 'danger')
+            return redirect(url_for('index'))
+        
+        return f(*args, **kwargs)
+    decorated_function.__name__ = f.__name__
+    return decorated_function
+
 # RUTA PRINCIPAL
 @app.route('/')
+@require_auth_and_terms
 def index():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -101,6 +125,21 @@ def login():
             flash(f'Error de conexión: {e}', 'danger')
     return render_template('login.html')
 
+# TÉRMINOS Y CONDICIONES
+@app.route('/terminos', methods=['GET', 'POST'])
+def terminos_condiciones():
+    if request.method == 'POST':
+        aceptar_terminos = request.form.get('aceptar_terminos')
+        aceptar_privacidad = request.form.get('aceptar_privacidad')
+        
+        if aceptar_terminos and aceptar_privacidad:
+            flash('Términos revisados. Continúe con el registro.', 'success')
+            return redirect(url_for('registro'))
+        else:
+            flash('Debe aceptar tanto los términos como la política de privacidad para continuar.', 'danger')
+    
+    return render_template('terminos_condiciones.html')
+
 # LOGOUT
 @app.route('/logout')
 def logout():
@@ -110,6 +149,7 @@ def logout():
 
 # Filtrar computadoras por estado
 @app.route('/filtro_estado', methods=['GET'])
+@require_auth_and_terms
 def filtro_estado():
     estado = request.args.get('estado', 'todos')
     try:
@@ -132,9 +172,8 @@ def filtro_estado():
 
 # Agregar nueva computadora
 @app.route('/computadora/nueva', methods=['GET', 'POST'])
+@require_auth_and_terms
 def nueva_computadora():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     
     if request.method == 'POST':
         nombre = request.form['nombre']
@@ -170,9 +209,8 @@ def nueva_computadora():
 
 # Ver detalles de computadora
 @app.route('/computadora/<int:id>')
+@require_auth_and_terms
 def ver_computadora(id):
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     
     try:
         conn = get_db_connection()
@@ -193,9 +231,8 @@ def ver_computadora(id):
 
 # Editar computadora
 @app.route('/computadora/editar/<int:id>', methods=['GET', 'POST'])
+@require_auth_and_terms
 def editar_computadora(id):
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     
     try:
         conn = get_db_connection()
@@ -208,19 +245,28 @@ def editar_computadora(id):
             numero_serie = request.form['numero_serie']
             ubicacion = request.form['ubicacion']
             estado = request.form['estado']
-            fecha_adquisicion = request.form.get('fecha_adquisicion')
-            fecha_ultimo_mantenimiento = request.form.get('fecha_ultimo_mantenimiento')
+            # Convertir cadenas vacías a None para permitir NULL en DATE
+            fecha_adquisicion = request.form.get('fecha_adquisicion') or None
+            fecha_ultimo_mantenimiento = request.form.get('fecha_ultimo_mantenimiento') or None
             observaciones = request.form.get('observaciones', '')
             
-            cursor.execute("""
-                UPDATE computadoras 
-                SET nombre = %s, marca = %s, modelo = %s, numero_serie = %s, 
-                    ubicacion = %s, estado = %s, fecha_adquisicion = %s, 
-                    fecha_ultimo_mantenimiento = %s, observaciones = %s
-                WHERE id = %s
-            """, (nombre, marca, modelo, numero_serie, ubicacion, estado,
-                  fecha_adquisicion, fecha_ultimo_mantenimiento, observaciones, id))
-            conn.commit()
+            try:
+                cursor.execute("""
+                    UPDATE computadoras 
+                    SET nombre = %s, marca = %s, modelo = %s, numero_serie = %s, 
+                        ubicacion = %s, estado = %s, fecha_adquisicion = %s, 
+                        fecha_ultimo_mantenimiento = %s, observaciones = %s
+                    WHERE id = %s
+                """, (nombre, marca, modelo, numero_serie, ubicacion, estado,
+                      fecha_adquisicion, fecha_ultimo_mantenimiento, observaciones, id))
+                conn.commit()
+            except Error as e:
+                conn.rollback()
+                flash(f'Error al actualizar: {e}', 'danger')
+                return redirect(url_for('editar_computadora', id=id))
+
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return jsonify({'success': True, 'message': 'Computadora actualizada correctamente'})
             flash('Computadora actualizada correctamente', 'success')
             return redirect(url_for('ver_computadora', id=id))
         
@@ -242,9 +288,8 @@ def editar_computadora(id):
 
 # Eliminar computadora
 @app.route('/computadora/eliminar/<int:id>', methods=['POST'])
+@require_auth_and_terms
 def eliminar_computadora(id):
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     
     try:
         conn = get_db_connection()
@@ -253,21 +298,27 @@ def eliminar_computadora(id):
         conn.commit()
         cursor.close()
         conn.close()
-        flash('Computadora eliminada correctamente', 'success')
+        
+        # Si es una petición AJAX, devolver JSON
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': True, 'message': 'Computadora eliminada correctamente'})
+        else:
+            flash('Computadora eliminada correctamente', 'success')
+            return redirect(url_for('index'))
+            
     except Error as e:
-        flash(f'Error al eliminar computadora: {e}', 'danger')
-    
-    return redirect(url_for('index'))
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'error': str(e)})
+        else:
+            flash(f'Error al eliminar computadora: {e}', 'danger')
+            return redirect(url_for('index'))
 
 # CRUD DE USUARIOS (solo para administradores)
 
 # Listar usuarios
 @app.route('/usuarios')
+@require_admin
 def listar_usuarios():
-    if 'usuario_id' not in session or session.get('usuario_rol') != 'admin':
-        flash('Acceso denegado', 'danger')
-        return redirect(url_for('index'))
-    
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -282,10 +333,8 @@ def listar_usuarios():
 
 # Editar usuario
 @app.route('/usuario/editar/<int:id>', methods=['GET', 'POST'])
+@require_admin
 def editar_usuario(id):
-    if 'usuario_id' not in session or session.get('usuario_rol') != 'admin':
-        flash('Acceso denegado', 'danger')
-        return redirect(url_for('index'))
     
     try:
         conn = get_db_connection()
@@ -331,10 +380,8 @@ def editar_usuario(id):
 
 # Eliminar usuario
 @app.route('/usuario/eliminar/<int:id>', methods=['POST'])
+@require_admin
 def eliminar_usuario(id):
-    if 'usuario_id' not in session or session.get('usuario_rol') != 'admin':
-        flash('Acceso denegado', 'danger')
-        return redirect(url_for('index'))
     
     if id == session['usuario_id']:
         flash('No puedes eliminar tu propia cuenta', 'danger')
@@ -355,9 +402,8 @@ def eliminar_usuario(id):
 
 # Búsqueda de computadoras
 @app.route('/buscar')
+@require_auth_and_terms
 def buscar_computadoras():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     
     query = request.args.get('q', '')
     if not query:
@@ -382,9 +428,8 @@ def buscar_computadoras():
 
 # Rutas para el dashboard
 @app.route('/computadoras-en-uso')
+@require_auth_and_terms
 def computadoras_en_uso():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     
     try:
         conn = get_db_connection()
@@ -399,9 +444,8 @@ def computadoras_en_uso():
         return render_template('computadoras_en_uso.html', computadoras=[])
 
 @app.route('/computadoras-libres')
+@require_auth_and_terms
 def computadoras_libres():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     
     try:
         conn = get_db_connection()
@@ -416,9 +460,8 @@ def computadoras_libres():
         return render_template('computadoras_libres.html', computadoras=[])
 
 @app.route('/observaciones')
+@require_auth_and_terms
 def observaciones():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     
     try:
         conn = get_db_connection()
@@ -434,16 +477,14 @@ def observaciones():
 
 # Ruta del dashboard (solo menú de opciones)
 @app.route('/dashboard')
+@require_auth_and_terms
 def dashboard():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     return render_template('dashboard.html')
 
 # Ruta para mostrar todas las computadoras
 @app.route('/todas-computadoras')
+@require_auth_and_terms
 def todas_computadoras():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -456,7 +497,29 @@ def todas_computadoras():
         flash(f'Error al cargar computadoras: {e}', 'danger')
         return render_template('todas_computadoras.html', computadoras=[])
 
-    
+@app.route('/netbooks')
+@require_auth_and_terms
+def listar_netbooks():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(
+            """
+            SELECT * FROM computadoras 
+            WHERE nombre LIKE %s OR modelo LIKE %s 
+            ORDER BY id DESC 
+            LIMIT 120
+            """,
+            ("%netbook%", "%netbook%")
+        )
+        computadoras = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('netbooks.html', computadoras=computadoras)
+    except Error as e:
+        flash(f'Error al cargar netbooks: {e}', 'danger')
+        return render_template('netbooks.html', computadoras=[])
+
 
 if __name__ == '__main__':
     app.run(debug=True) 

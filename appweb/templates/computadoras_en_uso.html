@@ -3,6 +3,21 @@
 <head>
     <title>Computadoras en Uso - Stock de Computadoras</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        /* Ajustes mínimos para que el listado sea responsive sin tocar styles.css */
+        .computadoras-list {
+            display: grid;
+            /*grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;*/
+        }
+        .computadora-item {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+    </style>
 </head>
 <body>
     <div class="login-container">

@@ -155,10 +155,23 @@ def filtro_estado():
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        if estado == 'todos':
+        # Normalizar valores del estado a los del ENUM de BD
+        estado_map = {
+            'Libre': 'disponible',
+            'En Uso': 'en uso',
+            'Mantenimiento': 'mantenimiento',
+            'Fuera de Servicio': 'baja',
+            'disponible': 'disponible',
+            'en uso': 'en uso',
+            'mantenimiento': 'mantenimiento',
+            'baja': 'baja',
+            'todos': 'todos'
+        }
+        estado_bd = estado_map.get(estado, 'todos')
+        if estado_bd == 'todos':
             cursor.execute("SELECT * FROM computadoras ORDER BY id DESC")
         else:
-            cursor.execute("SELECT * FROM computadoras WHERE estado = %s ORDER BY id DESC", (estado,))
+            cursor.execute("SELECT * FROM computadoras WHERE estado = %s ORDER BY id DESC", (estado_bd,))
         computadoras = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -188,12 +201,17 @@ def nueva_computadora():
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
-            cursor.execute("""
+            # Normalizar 'Fuera de Servicio' -> 'baja' para compatibilidad con esquema actual
+            estado_bd = 'baja' if estado == 'Fuera de Servicio' else estado
+            cursor.execute(
+                """
                 INSERT INTO computadoras (nombre, marca, modelo, numero_serie, ubicacion, estado, 
                                         fecha_adquisicion, observaciones, usuario_id)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """, (nombre, marca, modelo, numero_serie, ubicacion, estado, 
-                  fecha_adquisicion, observaciones, session['usuario_id']))
+                """,
+                (nombre, marca, modelo, numero_serie, ubicacion, estado_bd,
+                 fecha_adquisicion, observaciones, session['usuario_id'])
+            )
             conn.commit()
             cursor.close()
             conn.close()
@@ -251,14 +269,19 @@ def editar_computadora(id):
             observaciones = request.form.get('observaciones', '')
             
             try:
-                cursor.execute("""
+                # Normalizar 'Fuera de Servicio' -> 'baja' al guardar
+                estado_bd = 'baja' if estado == 'Fuera de Servicio' else estado
+                cursor.execute(
+                    """
                     UPDATE computadoras 
                     SET nombre = %s, marca = %s, modelo = %s, numero_serie = %s, 
                         ubicacion = %s, estado = %s, fecha_adquisicion = %s, 
                         fecha_ultimo_mantenimiento = %s, observaciones = %s
                     WHERE id = %s
-                """, (nombre, marca, modelo, numero_serie, ubicacion, estado,
-                      fecha_adquisicion, fecha_ultimo_mantenimiento, observaciones, id))
+                    """,
+                    (nombre, marca, modelo, numero_serie, ubicacion, estado_bd,
+                     fecha_adquisicion, fecha_ultimo_mantenimiento, observaciones, id)
+                )
                 conn.commit()
             except Error as e:
                 conn.rollback()
@@ -434,7 +457,7 @@ def computadoras_en_uso():
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM computadoras WHERE estado = 'En Uso' ORDER BY id DESC")
+        cursor.execute("SELECT * FROM computadoras WHERE estado = 'en uso' ORDER BY id DESC")
         computadoras = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -450,7 +473,7 @@ def computadoras_libres():
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM computadoras WHERE estado = 'Libre' ORDER BY id DESC")
+        cursor.execute("SELECT * FROM computadoras WHERE estado = 'disponible' ORDER BY id DESC")
         computadoras = cursor.fetchall()
         cursor.close()
         conn.close()

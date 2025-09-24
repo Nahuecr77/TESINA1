@@ -42,7 +42,7 @@ CREATE TABLE `computadoras` (
   `modelo` varchar(100) DEFAULT NULL,
   `numero_serie` varchar(100) DEFAULT NULL,
   `ubicacion` varchar(100) DEFAULT NULL,
-  `estado` enum('disponible','en uso','mantenimiento','baja') DEFAULT 'disponible',
+  `estado` enum('disponible','en uso','mantenimiento','Fuera de Servicio') DEFAULT 'disponible',
   `usuario_id` int(11) DEFAULT NULL,
   `fecha_adquisicion` date DEFAULT NULL,
   `fecha_ultimo_mantenimiento` date DEFAULT NULL,

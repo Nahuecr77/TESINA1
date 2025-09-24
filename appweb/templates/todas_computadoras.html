@@ -51,7 +51,7 @@
                             <td>{{ compu.modelo }}</td>
                             <td>{{ compu.numero_serie }}</td>
                             <td>{{ compu.ubicacion }}</td>
-                            <td>{{ compu.estado }}</td>
+                            <td>{{ 'Fuera de Servicio' if compu.estado in ['baja', 'Fuera de Servicio'] else compu.estado }}</td>
                             <td>
                                 <a href="{{ url_for('ver_computadora', id=compu.id) }}" class="action-btn">Ver</a>
                                 <a href="{{ url_for('editar_computadora', id=compu.id) }}" class="action-btn">Editar</a>

@@ -19,10 +19,10 @@
             <input type="text" name="ubicacion" placeholder="Ubicación" value="{{ computadora.ubicacion }}" required>
 
             <select name="estado" required>
-                <option value="En Uso" {{ 'selected' if computadora.estado == 'En Uso' else '' }}>En Uso</option>
-                <option value="Libre" {{ 'selected' if computadora.estado == 'Libre' else '' }}>Libre</option>
-                <option value="Mantenimiento" {{ 'selected' if computadora.estado == 'Mantenimiento' else '' }}>Mantenimiento</option>
-                <option value="Fuera de Servicio" {{ 'selected' if computadora.estado == 'Fuera de Servicio' else '' }}>Fuera de Servicio</option>
+                <option value="disponible" {{ 'selected' if computadora.estado == 'disponible' else '' }}>Disponible</option>
+                <option value="en uso" {{ 'selected' if computadora.estado == 'en uso' else '' }}>En Uso</option>
+                <option value="mantenimiento" {{ 'selected' if computadora.estado == 'mantenimiento' else '' }}>Mantenimiento</option>
+                <option value="Fuera de Servicio" {{ 'selected' if computadora.estado in ['Fuera de Servicio', 'baja'] else '' }}>Fuera de Servicio</option>
             </select>
 
             <label>Fecha de Adquisición</label>
